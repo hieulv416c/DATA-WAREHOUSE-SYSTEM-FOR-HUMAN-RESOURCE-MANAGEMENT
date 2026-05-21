@@ -6,7 +6,6 @@
 ## 📌 Tổng quan dự án
 Dự án này tập trung vào việc xây dựng một hệ thống **Kho dữ liệu (Data Warehouse - DW)** tích hợp để quản lý và phân tích nguồn nhân lực. Bằng cách sử dụng các công cụ **Business Intelligence (BI)**, hệ thống cung cấp các góc nhìn sâu sắc về hiệu suất nhân viên, cấu trúc lương và xu hướng biến động nhân sự, từ đó hỗ trợ ban lãnh đạo đưa ra các quyết định chiến lược dựa trên dữ liệu.
 
-*Dự án được thực hiện bởi Nhóm 4 - Khoa Hệ thống Thông tin, Trường Đại học Kinh tế - Luật (VNU-HCM).*
 
 ## 🎯 Mục tiêu
 * **Tập trung dữ liệu:** Tích hợp dữ liệu từ nhiều nguồn khác nhau (SQL Server, CSV, Excel) vào một kho dữ liệu duy nhất.
