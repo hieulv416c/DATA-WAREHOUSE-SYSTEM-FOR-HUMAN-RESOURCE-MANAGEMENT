@@ -1,0 +1,158 @@
+﻿-- MDX query với các Measures và Calculation
+-- Bài 1:Tính tổng giờ làm việc của tất cả nhân viên theo phòng ban
+SELECT 
+    [Measures].[Total Hours Worked] ON COLUMNS,
+    [Dim Department].[Department Name].MEMBERS ON ROWS
+FROM [DTWH FINAL]
+-- Bài 2: Phân tích chi phí thưởng (Bonus Amount) theo thời gian
+SELECT 
+    [Measures].[Bonus Amount] ON COLUMNS,
+    [Dim Time].[The Month].MEMBERS ON ROWS
+FROM [DTWH FINAL]
+
+-- Bài 3: Số lượng nhiệm vụ hoàn thành (Task Completed) theo từng nhân viên
+SELECT 
+    [Measures].[Task Completed] ON COLUMNS,
+    [Dim Emplyee].[First Name].MEMBERS ON ROWS
+FROM [DTWH FINAL]
+
+-- Bài 4: Phân tích số nhân viên rời đi (EmployeeLeftCount) 
+SELECT 
+    [Measures].[EmployeeLeftCount] ON COLUMNS,
+    [Dim Department].[Department Key] ON ROWS
+FROM [DTWH FINAL]
+-- Bài 5: Tổng chi phí nhân sự (Total Compensation) theo phòng ban
+SELECT 
+    [Measures].[Total Compensation] ON COLUMNS,
+    [Dim Department].[Department Name].MEMBERS ON ROWS
+FROM [DTWH FINAL]
+
+--Bài 6: Thời gian làm thêm (OT Hours) theo từng nhóm làm việc
+SELECT 
+    [Measures].[OT Hours] ON COLUMNS,
+    [Dim Department].[Group Name].MEMBERS ON ROWS
+FROM [DTWH FINAL]
+
+--Bài 7: So sánh mức lương cơ bản (Rate) theo giới tính.
+SELECT 
+    [Measures].[Rate] ON COLUMNS,
+    [Dim Emplyee].[Gender].MEMBERS ON ROWS
+FROM [DTWH FINAL]
+
+--Bài 8: Tổng số ngày nghỉ (Absent) theo thời gian
+SELECT 
+    [Measures].[Absent] ON COLUMNS,
+    [Dim Time].[The Quarter].MEMBERS ON ROWS
+FROM [DTWH FINAL]
+
+-- Bài 9: Tổng nhiệm vụ hoàn thành (Task Completed) và tổng giờ làm việc (Total Hours Worked) theo địa điểm
+SELECT 
+    {[Measures].[Task Completed], [Measures].[Total Hours Worked]} ON COLUMNS,
+    [Dim Location].[Coutry Name].MEMBERS ON ROWS
+FROM [DTWH FINAL]
+
+-- Bài 10: Phân tích lương theo tầng bậc trong tổ chức (Organization Level)
+SELECT 
+    [Measures].[Rate] ON COLUMNS,
+    [Dim Emplyee].[Organization Level].MEMBERS ON ROWS
+FROM [DTWH FINAL]
+-- Bài 11: Tính toán lương 1 tháng mà mỗi nhân viên được nhận
+SELECT 
+    [Measures].[SalaryMonth] ON COLUMNS,
+    [Dim Emplyee].[Employee Key].members ON ROWS
+FROM [DTWH FINAL]
+-- Bài 12: Tính lương 1 giờ của mỗi nhân viên 
+--để phục vụ cho việc tính toán lương 1 tháng và lương làm thêm của nhân viên
+SELECT 
+    [Measures].[SalaryMonth] ON COLUMNS,
+    [Dim Emplyee].[Employee Key].members ON ROWS
+FROM [DTWH FINAL]
+-- Bài 13: Tạo AverageHoursPerEmployeePerDay tính toán xem nhân viên nào tích cưc làm việc nhất
+-- với nhiều giờ làm việc nhất để khen thưởng.
+WITH 
+MEMBER [Measures].[AverageHoursPerEmployeePerDay] AS
+    IIF(
+        ([Measures].[Total Hours Worked] = 0 OR [Measures].[Fact Employee Salary Count] = 0),
+        NULL, -- Tránh chia cho 0
+        SUM(
+            [Dim Time].[The Year].&[2010], 
+            [Measures].[Total Hours Worked]
+        ) / ([Measures].[Fact Employee Salary Count] * 365)
+    )
+SELECT 
+    [Measures].[AverageHoursPerEmployeePerDay] ON COLUMNS,
+     [Dim Emplyee].[Employee Key].members ON ROWS
+FROM [DTWH FINAL]
+
+
+
+
+-- Xem các chỉ số KPI.
+-- 1. EfficiencyPerTask
+SELECT 
+    { 
+        KPIValue("EfficiencyPerTask"),
+        KPIGoal("EfficiencyPerTask"),
+        KPIStatus("EfficiencyPerTask"),
+        KPITrend("EfficiencyPerTask")
+    } ON COLUMNS  ,
+	 [Dim Emplyee].[Employee Key]  on rows
+FROM [DTWH FINAL]
+
+-- 2. AverageWorkHoursPerDay
+SELECT 
+    { 
+        KPIValue("AverageWorkHoursPerDay"),
+        KPIGoal("AverageWorkHoursPerDay"),
+        KPIStatus("AverageWorkHoursPerDay"),
+        KPITrend("AverageWorkHoursPerDay")
+    } ON COLUMNS  ,
+	 [Dim Emplyee].[Employee Key].members  on rows
+FROM [DTWH FINAL]
+
+--3. TurnoverRate
+SELECT 
+    { 
+        KPIValue("TurnoverRate"),
+        KPIGoal("TurnoverRate"),
+        KPIStatus("TurnoverRate"),
+        KPITrend("TurnoverRate")
+    } ON COLUMNS  ,
+	 [Dim Department].[Department Key].members  on rows
+FROM [DTWH FINAL]
+
+--4. AverageEmployeeSalary
+SELECT 
+    { 
+        KPIValue("AverageEmployeeSalary"),
+        KPIGoal("AverageEmployeeSalary"),
+        KPIStatus("AverageEmployeeSalary"),
+        KPITrend("AverageEmployeeSalary")
+    } ON COLUMNS  ,
+	 [Dim Emplyee].[Employee Key].members  on rows
+FROM [DTWH FINAL]
+--5. TotalOvertimeCost
+SELECT 
+    { 
+        KPIValue("TotalOvertimeCost"),
+        KPIGoal("TotalOvertimeCost"),
+        KPIStatus("TotalOvertimeCost"),
+        KPITrend("TotalOvertimeCost")
+    } ON COLUMNS ,
+	 [Dim Emplyee].[Employee Key].members  on rows
+FROM [DTWH FINAL]
+--6. SalaryperMonth
+SELECT 
+    { 
+        KPIValue("SalaryperMonth"),
+        KPIGoal("SalaryperMonth"),
+        KPIStatus("SalaryperMonth"),
+        KPITrend("SalaryperMonth")
+    } ON COLUMNS  ,
+	 [Dim Emplyee].[Employee Key].members  on rows
+FROM [DTWH FINAL]
+
+Đóng góp của MDX query cho quy trình HR:
+The MDX queries developed offer significant benefits to the HR management process, enabling organizations to optimize operations and improve overall efficiency. They provide tools to manage working hours effectively by analyzing total hours worked, overtime, and daily productivity. This helps organizations assess employee performance and identify individuals deserving of recognition and rewards. Additionally, the queries support detailed analysis of HR costs, such as base salaries, total compensation, and overtime expenses, ensuring better budget management and transparency while refining salary policies.
+
+Another key contribution is the ability to analyze employee turnover trends, enabling organizations to anticipate challenges and create strategies to retain top talent. By examining data over time, such as absence days, bonuses, and monthly salaries, organizations can identify long-term patterns and adjust their policies to better align with workforce needs. The queries also provide insights into performance and costs across departments, organizational levels, and workgroups, helping improve team dynamics and organizational structure. Moreover, KPI metrics like goals, statuses, and trends are presented through intuitive reports, empowering leaders to make informed and strategic decisions. Overall, these tools help organizations not only manage HR processes effectively but also foster a productive, engaged, and sustainable workforce.
