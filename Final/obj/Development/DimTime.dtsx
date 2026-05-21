@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/20/2024 10:01:20 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="DESKTOP-5KSQVBO"
+  DTS:CreatorName="DESKTOP-5KSQVBO\Dell"
+  DTS:DTSID="{0898A88B-B156-43D2-BD3D-751F7A1C0FBA}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5685.0"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="DimTime"
+  DTS:PackageType="5"
+  DTS:VersionBuild="6"
+  DTS:VersionGUID="{7B3A131B-B0C9-4001-8480-3BCD676BD43D}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[DESKTOP-5KSQVBO\LEVANHIEU.DTWH_FINAL]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{F6988B64-6EDC-4AFB-9A19-9842B18CA2E2}"
+      DTS:ObjectName="DESKTOP-5KSQVBO\LEVANHIEU.DTWH_FINAL">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="1"
+          DTS:ConnectRetryInterval="5"
+          DTS:ConnectionString="Data Source=DESKTOP-5KSQVBO\LEVANHIEU;Initial Catalog=DTWH_FINAL;Provider=SQLOLEDB.1;Integrated Security=SSPI;Application Name=SSIS-DimTime-{F6988B64-6EDC-4AFB-9A19-9842B18CA2E2}DESKTOP-5KSQVBO\LEVANHIEU.DTWH_FINAL;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Execute SQL Task"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{FE89B552-FD6D-483D-B1F9-45A02550C92A}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Execute SQL Task"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{F6988B64-6EDC-4AFB-9A19-9842B18CA2E2}"
+          SQLTask:SqlStatementSource="-- Drop the table if it exists&#xA;DROP TABLE IF EXISTS employee.DimTime;&#xA;&#xA;-- Declare variables&#xA;DECLARE @StartDate date = '20010101';&#xA;DECLARE @Year int = 20;&#xA;DECLARE @CutoffDate date = DATEADD(DAY, -1, DATEADD(YEAR, @Year, @StartDate));&#xA;&#xA;-- Create the table with a primary key constraint&#xA;CREATE TABLE employee.DimTime (&#xA;    DateKey          datetime PRIMARY KEY,&#xA;    DateKey1         date,&#xA;    TheDay           int,&#xA;    TheDayName       nvarchar(50),&#xA;    TheWeek          int,&#xA;    TheISOWeek       int,&#xA;    TheDayOfWeek     int,&#xA;    TheMonth         int,&#xA;    TheMonthName     nvarchar(50),&#xA;    TheQuarter       int,&#xA;    TheYear          int,&#xA;    TheFirstOfMonth  date,&#xA;    TheLastOfYear    date,&#xA;    TheDayOfYear     int&#xA;);&#xA;&#xA;-- Use a CTE to generate the date sequence&#xA;;WITH seq(n) AS &#xA;(&#xA;  SELECT 0 UNION ALL SELECT n + 1 FROM seq&#xA;  WHERE n &lt; DATEDIFF(DAY, @StartDate, @CutoffDate)&#xA;),&#xA;d(d) AS &#xA;(&#xA;  SELECT DATEADD(DAY, n, @StartDate) FROM seq&#xA;),&#xA;src AS&#xA;(&#xA;  SELECT&#xA;    DateKey         &#x9;= CONVERT(datetime, d),&#xA;    DateKey1 &#x9;&#x9;= CAST(d AS DATE),&#xA;    TheDay         &#x9;&#x9;= DATEPART(DAY,       d),&#xA;    TheDayName      &#x9;= DATENAME(WEEKDAY,   d),&#xA;    TheWeek         &#x9;= DATEPART(WEEK,      d),&#xA;    TheISOWeek      &#x9;= DATEPART(ISO_WEEK,  d),&#xA;    TheDayOfWeek    &#x9;= DATEPART(WEEKDAY,   d),&#xA;    TheMonth        &#x9;= DATEPART(MONTH,     d),&#xA;    TheMonthName    &#x9;= DATENAME(MONTH,     d),&#xA;    TheQuarter      &#x9;= DATEPART(Quarter,   d),&#xA;    TheYear         &#x9;= DATEPART(YEAR,      d),&#xA;    TheFirstOfMonth &#x9;= DATEFROMPARTS(YEAR(d), MONTH(d), 1),&#xA;    TheLastOfYear   &#x9;= DATEFROMPARTS(YEAR(d), 12, 31),&#xA;    TheDayOfYear    &#x9;= DATEPART(DAYOFYEAR, d)&#xA;  FROM d&#xA;)&#xA;&#xA;-- Insert the data into the table&#xA;INSERT INTO employee.DimTime&#xA;SELECT * &#xA;FROM src&#xA;ORDER BY DateKey&#xA;OPTION (MAXRECURSION 0);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph">
+        <NodeLayout
+          Size="162.4,41.6"
+          Id="Package\Execute SQL Task"
+          TopLeft="216.428571889291,166.705882206817" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
